@@ -15,16 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
 
-
-
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     public AuthController(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping("/api/login")
-    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/login")
+    @CrossOrigin(origins = "/**")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
         try {
             Authentication authentication = authenticationManager.authenticate(
