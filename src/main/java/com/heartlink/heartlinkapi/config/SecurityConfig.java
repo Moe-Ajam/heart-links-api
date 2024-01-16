@@ -8,12 +8,9 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.CorsRegistration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 @Configuration
@@ -39,10 +36,14 @@ public class SecurityConfig {
                 .formLogin(Customizer.withDefaults())
                 .csrf((csrf) -> csrf
                 .ignoringRequestMatchers("/api/*")
-        );
-                //.csrf(AbstractHttpConfigurer::disable);
+        ).sessionManagement(session -> session.maximumSessions(1).maxSessionsPreventsLogin(true));
 
         return http.build();
+    }
+
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 
 }
