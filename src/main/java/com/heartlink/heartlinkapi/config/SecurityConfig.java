@@ -10,10 +10,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.CorsRegistration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@EnableTransactionManagement(proxyTargetClass = true)
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -24,29 +26,23 @@ public class SecurityConfig {
     }
 
 
-    // todo: still unable to reach the security api successfully
+    // Todo: Fix the 401 Unauthorized when Posting to the Login Service
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest()
-                        .permitAll())
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/*").permitAll()
+                        .requestMatchers("/*").hasAnyAuthority("*")
+                        .anyRequest().authenticated()
+                )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable);
+                .csrf((csrf) -> csrf
+                .ignoringRequestMatchers("/api/*")
+        );
+                //.csrf(AbstractHttpConfigurer::disable);
+
         return http.build();
     }
 
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/**") // Or more specific paths
-//                        .allowedOrigins("*") // URL of your React app
-//                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-//                        .allowedHeaders("*")
-//                        .allowCredentials(true);
-//            }
-//        };
-//    }
 }

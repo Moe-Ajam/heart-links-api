@@ -21,8 +21,8 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping("/login")
-    @CrossOrigin(origins = "/**")
+    @PostMapping("/api/login")
+    @CrossOrigin(origins = "/*")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
         try {
             Authentication authentication = authenticationManager.authenticate(
