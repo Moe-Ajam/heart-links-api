@@ -8,6 +8,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -26,6 +27,7 @@ public class SecurityConfig {
     // Todo: Fix the 401 Unauthorized when Posting to the Login Service
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        //.ignoringRequestMatchers("/api/*")
         http
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/*").permitAll()
@@ -34,9 +36,7 @@ public class SecurityConfig {
                 )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
-                .csrf((csrf) -> csrf
-                .ignoringRequestMatchers("/api/*")
-        ).sessionManagement(session -> session.maximumSessions(1).maxSessionsPreventsLogin(true));
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
