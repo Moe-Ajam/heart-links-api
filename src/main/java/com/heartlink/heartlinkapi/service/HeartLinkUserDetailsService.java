@@ -2,7 +2,6 @@ package com.heartlink.heartlinkapi.service;
 
 import com.heartlink.heartlinkapi.model.User;
 import com.heartlink.heartlinkapi.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

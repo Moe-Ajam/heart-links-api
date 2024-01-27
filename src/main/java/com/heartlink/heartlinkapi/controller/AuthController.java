@@ -3,7 +3,8 @@ package com.heartlink.heartlinkapi.controller;
 import com.heartlink.heartlinkapi.dto.LoginRequest;
 import com.heartlink.heartlinkapi.model.User;
 import com.heartlink.heartlinkapi.repository.UserRepository;
-import com.heartlink.heartlinkapi.service.UserService;
+import com.heartlink.heartlinkapi.service.AuthService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,35 +13,29 @@ import org.springframework.web.bind.annotation.*;
 
 @Log4j2
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class AuthController {
-    private final UserRepository userRepository;
-    private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserRepository userRepository, UserService userService, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final UserRepository userRepository;
+    private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
 
     // todo : userValidateLoginRequest is returning an error - check it
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         ResponseEntity<String> response;
         try {
-            boolean isValidUser = userService.userValidateLoginRequest(loginRequest.getEmail(), loginRequest.getPassword());
+            boolean isValidUser = authService.userValidateLoginRequest(loginRequest.getEmail(), loginRequest.getPassword());
             if(isValidUser) {
                 return ResponseEntity.ok().body("User authenticated successfully");
             } else {
-                return ResponseEntity.badRequest().body("Invalid email or password");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
             }
         } catch (Exception e) {
-            log.error("error", e);
             response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
-
-        return null;
+        return response;
     }
 
     @PostMapping("/register")
