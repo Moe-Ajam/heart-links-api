@@ -19,7 +19,6 @@ public class PostController {
     }
 
     @GetMapping
-    @CrossOrigin(origins = "http://localhost:3000")
     public List<Post> getAllPosts() {
         return postService.getAllPosts();
     }
