@@ -15,6 +15,7 @@ public class HeatLinkUsernamePwdAuthenticationProvider implements Authentication
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
