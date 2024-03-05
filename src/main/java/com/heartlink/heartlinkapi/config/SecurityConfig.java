@@ -32,7 +32,6 @@ public class SecurityConfig {
     }
 
 
-    // Todo: Fix the 401 Unauthorized when Posting to the Login Service
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
